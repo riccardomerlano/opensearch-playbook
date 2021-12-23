@@ -1,0 +1,49 @@
+---
+
+- name: Logstash Install | Download logstash OSS {{ logstash_version }}
+  get_url:
+    url: "{{ logstash_download_url }}/logstash-oss-with-opensearch-output-plugin-{{ logstash_version }}-linux-x64.tar.gz"
+    dest: "/tmp/logstash.tar.gz"
+  register: download
+
+- name: Logstash Install | Create opensearch user
+  user:
+    name: "{{ os_user }}"
+    state: present
+    shell: /bin/bash
+  when: download.changed
+
+- name: logstash Install | Create home directory
+  file:
+    path: "{{ logstash_home }}"
+    state: directory
+    owner: "{{ os_user }}"
+    group: "{{ os_user }}"
+  when: download.changed
+
+- name: Logstash Install | Extract the tar file
+  command: chdir=/tmp/ tar -xvzf logstash.tar.gz -C "{{ logstash_home }}" --strip-components=1
+  when: download.changed
+
+- name: Logstash Install Conf | Copy Configuration File
+  template:
+    src: logstash.yml
+    dest: "{{os_conf_dir}}/logstash.yml"
+    owner: "{{ os_user }}"
+    group: "{{ os_user }}"
+    mode: 0644
+    backup: yes
+
+- name: Logstash Install Pipeline | Copy Configuration File
+  template:
+    src: pipelines.yml
+    dest: "{{os_conf_dir}}/pipelines.yml"
+    owner: "{{ os_user }}"
+    group: "{{ os_user }}"
+    mode: 0644
+    backup: yes    
+
+- name: Logstash Install | create systemd service
+  template:
+    src: logstash.service
+    dest: "{{ systemctl_path }}/logstash.service"

@@ -1,0 +1,19 @@
+---
+os_nodes: |-
+        {% for item in groups['os-cluster'] -%}
+          {{ hostvars[item]['ip'] }}{% if not loop.last %}","{% endif %}
+        {%- endfor %}
+
+populate_inventory_to_hosts_file: true
+
+logstash_home: /usr/share/logstash
+os_conf_dir: /usr/share/logstash/config
+# os_plugin_bin_path: /usr/share/opensearch-dashboards/bin/opensearch-dashboards-plugin
+
+os_api_port: 9500
+os_nodes_logstash: |-
+        {% for item in groups['os-cluster'] -%}
+          https://{{ hostvars[item]['ip'] }}:{{ os_api_port }}{% if not loop.last %}","{% endif %}
+        {%- endfor %}
+
+systemctl_path: /etc/systemd/system
