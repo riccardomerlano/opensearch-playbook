@@ -11,7 +11,7 @@
     name: "{{ os_user }}"
     state: present
     shell: /bin/bash
-  when: download.changed
+  # when: download.changed
 
 - name: logstash Install | Create home directory
   file:
@@ -19,25 +19,28 @@
     state: directory
     owner: "{{ os_user }}"
     group: "{{ os_user }}"
-  when: download.changed
+  # when: download.changed
 
 - name: Logstash Install | Extract the tar file
   command: chdir=/tmp/ tar -xvzf logstash.tar.gz -C "{{ logstash_home }}" --strip-components=1
-  when: download.changed
+  # when: download.changed
 
-- name: Logstash Install Conf | Copy Configuration File
-  template:
-    src: logstash.yml
-    dest: "{{os_conf_dir}}/logstash.yml"
-    owner: "{{ os_user }}"
-    group: "{{ os_user }}"
-    mode: 0644
-    backup: yes
+- name: Logstash Install | Make data dir readable
+  command: chmod 644 {{ logstash_home }}/data
 
-- name: Logstash Install Pipeline | Copy Configuration File
+#- name: Logstash Install Conf | Copy Configuration File
+#  template:
+#    src: logstash.yml
+#    dest: "{{os_conf_dir}}/logstash.yml"
+#    owner: "{{ os_user }}"
+#    group: "{{ os_user }}"
+#    mode: 0644
+#   backup: yes
+
+- name: Logstash Mock Pipeline | Copy Configuration File
   template:
-    src: pipelines.yml
-    dest: "{{os_conf_dir}}/pipelines.yml"
+    src: logstash-test.conf
+    dest: "{{os_conf_dir}}/logstash-test.conf"
     owner: "{{ os_user }}"
     group: "{{ os_user }}"
     mode: 0644
