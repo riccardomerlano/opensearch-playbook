@@ -13,7 +13,7 @@
     shell: /bin/bash
   # when: download.changed
 
-- name: logstash Install | Create home directory
+- name: Logstash Install | Create home directory
   file:
     path: "{{ logstash_home }}"
     state: directory
@@ -26,27 +26,25 @@
   # when: download.changed
 
 - name: Logstash Install | Make data dir readable
-  command: chmod 644 {{ logstash_home }}/data
+  command: chmod 666 {{ logstash_home }}/data
+  # when: download.changed
 
-#- name: Logstash Install Conf | Copy Configuration File
-#  template:
-#    src: logstash.yml
-#    dest: "{{os_conf_dir}}/logstash.yml"
-#    owner: "{{ os_user }}"
-#    group: "{{ os_user }}"
-#    mode: 0644
-#   backup: yes
+- name: Logstash Install | Create NTT config dir
+  command: mkdir {{ ntt_conf_dir }} 
+  # when: download.changed
 
 - name: Logstash Mock Pipeline | Copy Configuration File
   template:
     src: logstash-test.conf
-    dest: "{{os_conf_dir}}/logstash-test.conf"
+    dest: "{{ntt_conf_dir}}/logstash-test.conf"
     owner: "{{ os_user }}"
     group: "{{ os_user }}"
     mode: 0644
-    backup: yes    
+    backup: yes
+  # when: download.changed  
 
 - name: Logstash Install | create systemd service
   template:
     src: logstash.service
     dest: "{{ systemctl_path }}/logstash.service"
+  # when: download.changed  

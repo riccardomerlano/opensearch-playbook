@@ -19,7 +19,7 @@
   include: logstash.yml
 
 - name: Make sure logstash is started
-  systemd:
+  service:
     name: logstash
     state: started
     enabled: yes
