@@ -12,7 +12,7 @@ WorkingDirectory={{ logstash_home }}
 User=opensearch
 Group=opensearch
 
-ExecStart={{ logstash_home }}/bin/logstash
+ExecStart={{ logstash_home }}/bin/logstash -f {{ ntt_conf_dir }}
 
 StandardOutput=journal
 StandardError=inherit
