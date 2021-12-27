@@ -1,8 +1,8 @@
 ---
 
-- name: Logstash Install | Download logstash OSS {{ logstash_version }}
+- name: Logstash Install | Download logstash OSS {{ logstash_version }} (URL={{ logstash_download_url }})
   get_url:
-    url: "{{ logstash_download_url }}/logstash-oss-with-opensearch-output-plugin-{{ logstash_version }}-linux-x64.tar.gz"
+    url: "{{ logstash_download_url }}"
     dest: "/tmp/logstash.tar.gz"
   register: download
 
@@ -11,7 +11,7 @@
     name: "{{ logstash_user }}"
     state: present
     shell: /bin/bash
-  # when: download.changed
+  when: download.changed
 
 - name: Logstash Install | Create home directory
   file:
@@ -19,11 +19,11 @@
     state: directory
     owner: "{{ logstash_user }}"
     group: "{{ logstash_user }}"
-  # when: download.changed
+  when: download.changed
 
 - name: Logstash Install | Extract the tar file
   command: chdir=/tmp/ tar -xvzf logstash.tar.gz -C "{{ logstash_home }}" --strip-components=1
-  # when: download.changed
+  when: download.changed
 
 - name: Logstash Install | Update data directory
   file:
@@ -31,9 +31,9 @@
     state: directory
     owner: "{{ logstash_user }}"
     group: "{{ logstash_user }}"
-  # when: download.changed
+  when: download.changed
 
-- name: Logstash Mock Pipeline | Copy Configuration File
+- name: Logstash Mock Pipeline | Copy pipelines.yml
   template:
     src: pipelines.yml
     dest: "{{logstash_conf_dir}}/pipelines.yml"
@@ -41,9 +41,9 @@
     group: "{{ logstash_user }}"
     mode: 0644
     backup: yes
-  # when: download.changed  
+  when: download.changed  
 
-- name: Logstash System Options | Copy Configuration File
+- name: Logstash System Options | Copy startup.options File
   template:
     src: startup.options
     dest: "{{ logstash_conf_dir }}/startup.options"
@@ -51,7 +51,7 @@
     group: "{{ logstash_user }}"
     mode: 0644
     backup: yes
-  # when: download.changed  
+  when: download.changed  
 
 - name: Logstash Install | Run system-install script
   command: "{{ logstash_home }}/bin/system-install"

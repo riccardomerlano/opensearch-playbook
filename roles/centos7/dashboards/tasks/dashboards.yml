@@ -1,8 +1,8 @@
 ---
 
-- name: Dashboards Install | Download opensearch dashbaord {{ os_dashboards_version }}
+- name: Dashboards Install | Download opensearch dashbaord {{ os_dashboards_version }} (URL={{ dashboards_download_url }})
   get_url:
-    url: "{{ os_download_url }}-dashboards/{{ os_dashboards_version }}/opensearch-dashboards-{{ os_dashboards_version }}-linux-x64.tar.gz"
+    url: "{{ dashboards_download_url }}"
     dest: "/tmp/opensearch-dashboards.tar.gz"
   register: download
 

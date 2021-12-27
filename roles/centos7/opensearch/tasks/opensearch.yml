@@ -1,8 +1,8 @@
 ---
 
-- name: OpenSearch Install | Download opensearch {{ os_version }}
+- name: OpenSearch Install | Download opensearch {{ os_version }} (URL={{ opensearch_download_url }})
   get_url:
-    url: "{{ os_download_url }}/{{ os_version }}/opensearch-{{ os_version }}-linux-x64.tar.gz"
+    url: "{{ opensearch_download_url }}"
     dest: "/tmp/opensearch.tar.gz"
   register: download
 

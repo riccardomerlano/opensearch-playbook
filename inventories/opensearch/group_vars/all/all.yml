@@ -2,12 +2,6 @@
 
 os_cluster_name: development-cluster
 
-# opensearch download
-os_download_url: https://artifacts.opensearch.org/releases/bundle/opensearch
-
-# https://artifacts.opensearch.org/logstash/logstash-oss-with-opensearch-output-plugin-7.16.2-linux-x64.tar.gz
-logstash_download_url: https://artifacts.opensearch.org/logstash
-
 # opensearch version
 os_version: "1.2.2"
 
@@ -16,6 +10,12 @@ os_dashboards_version: "1.2.0"
 
 #logstash version
 logstash_version: "7.16.2"
+
+# URL installation packages
+opensearch_download_url: https://artifacts.opensearch.org/releases/bundle/opensearch/{{ os_version }}/opensearch-{{ os_version }}-linux-x64.tar.gz
+dashboards_download_url: https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/{{ os_dashboards_version }}/opensearch-dashboards-{{ os_dashboards_version }}-linux-x64.tar.gz
+logstash_download_url: https://artifacts.opensearch.org/logstash/logstash-oss-with-opensearch-output-plugin-{{ logstash_version }}-linux-x64.tar.gz
+
 
 # Configure hostnames for opensearch nodes
 # It is required to configure SSL
