@@ -29,14 +29,14 @@
   command: chmod 666 {{ logstash_home }}/data
   # when: download.changed
 
-- name: Logstash Install | Create NTT config dir
-  command: mkdir {{ ntt_conf_dir }} 
+#- name: Logstash Install | Create NTT config dir
+#  command: mkdir {{ ntt_conf_dir }}à 
   # when: download.changed
 
 - name: Logstash Mock Pipeline | Copy Configuration File
   template:
-    src: logstash-test.conf
-    dest: "{{ntt_conf_dir}}/logstash-test.conf"
+    src: pipelines.yml
+    dest: "{{logstash_conf_dir}}/pipelines.yml"
     owner: "{{ logstash_user }}"
     group: "{{ logstash_user }}"
     mode: 0644
