@@ -16,4 +16,4 @@
   hosts: logstash
   gather_facts: true
   roles:
-    - { role: centos7/logstash }    
+    - { role: centos7/logstash }

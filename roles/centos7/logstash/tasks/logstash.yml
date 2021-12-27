@@ -6,9 +6,9 @@
     dest: "/tmp/logstash.tar.gz"
   register: download
 
-- name: Logstash Install | Create opensearch user
+- name: Logstash Install | Create logstash_user user
   user:
-    name: "{{ os_user }}"
+    name: "{{ logstash_user }}"
     state: present
     shell: /bin/bash
   # when: download.changed
@@ -17,8 +17,8 @@
   file:
     path: "{{ logstash_home }}"
     state: directory
-    owner: "{{ os_user }}"
-    group: "{{ os_user }}"
+    owner: "{{ logstash_user }}"
+    group: "{{ logstash_user }}"
   # when: download.changed
 
 - name: Logstash Install | Extract the tar file
@@ -37,14 +37,21 @@
   template:
     src: logstash-test.conf
     dest: "{{ntt_conf_dir}}/logstash-test.conf"
-    owner: "{{ os_user }}"
-    group: "{{ os_user }}"
+    owner: "{{ logstash_user }}"
+    group: "{{ logstash_user }}"
     mode: 0644
     backup: yes
   # when: download.changed  
 
-- name: Logstash Install | create systemd service
+- name: Logstash System Options | Copy Configuration File
   template:
-    src: logstash.service
-    dest: "{{ systemctl_path }}/logstash.service"
+    src: startup.options
+    dest: "{{ logstash_conf_dir }}/startup.options"
+    owner: "{{ logstash_user }}"
+    group: "{{ logstash_user }}"
+    mode: 0644
+    backup: yes
   # when: download.changed  
+
+- name: Logstash Install | Run system-install script
+  command: "{{ logstash_home }}/bin/system-install"
