@@ -33,17 +33,29 @@
     group: "{{ logstash_user }}"
   when: download.changed
 
-- name: Logstash Mock Pipeline | Copy pipelines.yml
+- name: Logstash Install | Remove sample pipeline in config dir
+  command: rm --force {{ logstash_conf_dir }}/logstash-sample.conf
+  when: download.changed  
+
+- name: Logstash Install | Create pipeline directory {{ logstash_pipeline_dir }}
+  file:
+    path: "{{ logstash_pipeline_dir }}"
+    state: directory
+    owner: "{{ logstash_user }}"
+    group: "{{ logstash_user }}"
+  when: download.changed  
+
+- name: Logstash Install | Copy logstash-sample.conf in {{ logstash_pipeline_dir }}
   template:
-    src: pipelines.yml
-    dest: "{{logstash_conf_dir}}/pipelines.yml"
+    src: logstash-sample.conf
+    dest: "{{ logstash_pipeline_dir }}/logstash-sample.conf"
     owner: "{{ logstash_user }}"
     group: "{{ logstash_user }}"
     mode: 0644
-    backup: yes
-  when: download.changed  
+    backup: no
+  when: download.changed    
 
-- name: Logstash System Options | Copy startup.options File
+- name: Logstash Install | Copy (and backup) startup.options File in {{ logstash_conf_dir }}
   template:
     src: startup.options
     dest: "{{ logstash_conf_dir }}/startup.options"

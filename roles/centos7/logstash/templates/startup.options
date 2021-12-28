@@ -17,8 +17,10 @@ LS_HOME={{ logstash_home }}
 # logstash settings directory, the path which contains logstash.yml
 LS_SETTINGS_DIR={{ logstash_conf_dir }}
 
+LS_PIPELINE_DIR={{ logstash_pipeline_dir }}
+
 # Arguments to pass to logstash
-LS_OPTS="--path.settings ${LS_SETTINGS_DIR}"
+LS_OPTS="--path.settings ${LS_SETTINGS_DIR} --path.config ${LS_PIPELINE_DIR}"
 
 # Arguments to pass to java
 LS_JAVA_OPTS=""

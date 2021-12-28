@@ -7,10 +7,8 @@ os_nodes: |-
 populate_inventory_to_hosts_file: true
 
 logstash_home: /usr/share/logstash
-ntt_conf_dir: /usr/share/logstash/nttconfig
 logstash_conf_dir: /usr/share/logstash/config
-# os_plugin_bin_path: /usr/share/opensearch-dashboards/bin/opensearch-dashboards-plugin
-
+logstash_pipeline_dir: /usr/share/logstash/pipeline
 logstash_user: logstash
 
 os_api_port: 9500
