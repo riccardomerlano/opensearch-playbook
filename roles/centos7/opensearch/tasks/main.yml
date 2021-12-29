@@ -18,6 +18,12 @@
 - name: include opensearch installation
   include: opensearch.yml
 
+#- name: Make sure opensearch is started
+#  service:
+#    name: opensearch
+#    state: started
+#    enabled: yes
+
 - name: include security plugin for opensearch
   include: security.yml
 
@@ -26,11 +32,11 @@
 - name: Remove `cluster.initial_master_nodes` setting from configuration
   command: sed -i '/cluster.initial_master_nodes/d' "{{os_conf_dir}}/opensearch.yml"
 
-- name: Make sure opensearch is started
-  service:
-    name: opensearch
-    state: started
-    enabled: yes
+#- name: Make sure opensearch is started
+#  service:
+#    name: opensearch
+#    state: started
+#    enabled: yes
 
 - name: Get all the installed ES plugins
   command: "{{ os_plugin_bin_path }} list"

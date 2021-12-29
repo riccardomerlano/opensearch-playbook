@@ -45,3 +45,5 @@ clients:
   - name: admin
     dn: CN=admin.{{ domain_name }},OU=Ops,O={{ domain_name }}\, Inc.,DC={{ domain_name }}
     admin: true
+  - name: dashboard
+    dn: CN=admin.{{ domain_name }},OU=Ops,O={{ domain_name }}\, Inc.,DC={{ domain_name }}

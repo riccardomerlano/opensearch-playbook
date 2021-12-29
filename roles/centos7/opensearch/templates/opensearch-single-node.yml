@@ -9,3 +9,4 @@ http.port: 9200
 discovery.type: single-node
 
 bootstrap.memory_lock: true
+

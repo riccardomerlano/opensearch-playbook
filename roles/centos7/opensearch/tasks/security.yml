@@ -16,12 +16,12 @@
     url: https://search.maven.org/remotecontent?filepath=com/floragunn/search-guard-tlstool/1.5/search-guard-tlstool-1.5.tar.gz
     dest: /tmp/opensearch-nodecerts/search-guard-tlstool.tar.gz
   run_once: true
-  # when: configuration.changed
+  when: configuration.changed
 
 - name: Security Plugin configuration | Extract the certificates generation tool
   local_action: command chdir=/tmp/opensearch-nodecerts tar -xvf search-guard-tlstool.tar.gz
   run_once: true
-  # when: configuration.changed
+  when: configuration.changed
 
 - name: Security Plugin configuration | Make the executable file
   local_action:
@@ -29,7 +29,7 @@
     dest: /tmp/opensearch-nodecerts/tools/sgtlstool.sh
     mode: a+x
   run_once: true
-  # when: configuration.changed
+  when: configuration.changed
 
 - name: Security Plugin configuration | Prepare the certificates generation template file
   local_action:
@@ -37,13 +37,13 @@
     src: tlsconfig.yml
     dest: /tmp/opensearch-nodecerts/config/tlsconfig.yml
   run_once: true
-  # when: configuration.changed
+  when: configuration.changed
 
 - name: Security Plugin configuration | Generate the node & admin certificates in local
   local_action:
     module: command /tmp/opensearch-nodecerts/tools/sgtlstool.sh -c /tmp/opensearch-nodecerts/config/tlsconfig.yml -ca -crt -t /tmp/opensearch-nodecerts/config/
   run_once: true
-  # when: configuration.changed
+  when: configuration.changed
 
 - name: Security Plugin configuration | Copy the node & admin certificates to opensearch nodes
   copy:
@@ -59,7 +59,9 @@
     - "{{ inventory_hostname }}_http.pem"
     - admin.key
     - admin.pem
-  # when: configuration.changed
+    - dashboard.key
+    - dashboard.pem
+  when: configuration.changed
 
 - name: Security Plugin configuration | Copy the security configuration file 1 to cluster
   blockinfile:
@@ -68,7 +70,7 @@
     backup: yes
     insertafter: EOF
     marker: "## {mark} OpenSearch Security common configuration ##"
-  # when: configuration.changed
+  #when: configuration.changed
 
 - name: Security Plugin configuration | Copy the security configuration file 2 to cluster
   blockinfile:
@@ -77,11 +79,11 @@
     backup: yes
     insertafter: EOF
     marker: "## {mark} opensearch Security Node & Admin certificates configuration ##"
-  # when: configuration.changed
+  #when: configuration.changed
 
 - name: Security Plugin configuration | Prepare the opensearch security configuration file
   command: sed -i 's/searchguard/plugins.security/g' {{ os_conf_dir }}/opensearch.yml
-  # when: configuration.changed
+  #when: configuration.changed
 
 - name: Security Plugin configuration | Set the file ownerships
   file:
@@ -102,10 +104,12 @@
     name: opensearch
     state: restarted
     enabled: yes
+  debugger: always
 
-- name: Pause for 3 seconds to provide sometime for OpenSearch start
+- name: Pause for 10 seconds to provide sometime for OpenSearch start
   pause:
-    seconds: 3
+    seconds: 10
+  debugger: always
 
 - name: Security Plugin configuration | Copy the opensearch security internal users template
   template:
@@ -113,7 +117,8 @@
     dest: "{{ os_sec_plugin_conf_path }}/internal_users.yml"
     mode: 0644
   run_once: true
-  # when: configuration.changed
+  when: configuration.changed
+  debugger: always
 
 - name: Security Plugin configuration | Set the Admin user password
   shell: >
@@ -122,7 +127,8 @@
   environment:
     JAVA_HOME: "{{ os_home }}/jdk"
   run_once: true
-  # when: configuration.changed
+  when: configuration.changed
+  debugger: always
 
 - name: Security Plugin configuration | Set the kibanaserver user pasword
   shell: >
@@ -131,7 +137,15 @@
   environment:
     JAVA_HOME: "{{ os_home }}/jdk"
   run_once: true
-  # when: configuration.changed
+  when: configuration.changed
+  debugger: always
+
+## added by riccardo
+- name: Security Plugin configuration | Set the {{ os_sec_plugin_tools_path }} scripts permission
+  file:
+    path: "{{ os_sec_plugin_tools_path }}"
+    mode: 0755
+    recurse: yes
 
 - name: Security Plugin configuration | Initialize the opensearch security index in opensearch
   shell: >
@@ -146,6 +160,7 @@
     JAVA_HOME: "{{ os_home }}/jdk"
   run_once: true
   # when: configuration.changed
+  debugger: always
 
 - name: Security Plugin configuration | Cleanup local temporary directory
   local_action:
@@ -153,4 +168,4 @@
     path: /tmp/opensearch-nodecerts
     state: absent
   run_once: true
-  # when: configuration.changed
+  when: configuration.changed

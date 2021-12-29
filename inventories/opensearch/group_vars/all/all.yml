@@ -20,7 +20,7 @@ logstash_download_url: https://artifacts.opensearch.org/logstash/logstash-oss-wi
 # Configure hostnames for opensearch nodes
 # It is required to configure SSL
 # Example es1.example.com, es2.example.com
-domain_name: example.com
+domain_name: localhost
 
 os_user: opensearch
 
@@ -30,4 +30,7 @@ xms_value: 2
 xmx_value: 2
 
 # Cluster type whether its single node or multi-node
-cluster_type: multi-node
+cluster_type: single-node
+
+# Directory in host system where certificates are stored
+os_conf_dir: /usr/share/opensearch/config
