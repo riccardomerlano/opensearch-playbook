@@ -1,7 +1,7 @@
 server.port: 5601
 server.host: "{{ hostvars[inventory_hostname]['ip'] }}"
 opensearch.hosts: ["{{ os_nodes_dashboards }}"]
-opensearch.ssl.verificationMode: full
+opensearch.ssl.verificationMode: certificate
 opensearch.username: "kibanaserver"
 opensearch.password: "{{ kibanaserver_password }}"
 opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
