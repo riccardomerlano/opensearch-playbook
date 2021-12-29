@@ -83,14 +83,14 @@
     marker: "## {mark} OpenSearch Security common configuration ##"
   #when: configuration.changed
 
-- name: Security Plugin configuration | Copy the security configuration file 2 to cluster
-  blockinfile:
-    block: "{{ lookup('file', '/tmp/opensearch-nodecerts/config/{{ inventory_hostname }}_elasticsearch_config_snippet.yml') }}"
-    dest: "{{ os_conf_dir }}/opensearch.yml"
-    backup: yes
-    insertafter: EOF
-    marker: "## {mark} opensearch Security Node & Admin certificates configuration ##"
-  #when: configuration.changed
+#- name: Security Plugin configuration | Copy the security configuration file 2 to cluster
+#  blockinfile:
+#    block: "{{ lookup('file', '/tmp/opensearch-nodecerts/config/{{ inventory_hostname }}_elasticsearch_config_snippet.yml') }}"
+#    dest: "{{ os_conf_dir }}/opensearch.yml"
+#    backup: yes
+#    insertafter: EOF
+#    marker: "## {mark} opensearch Security Node & Admin certificates configuration ##"
+#  when: configuration.changed
 
 - name: Security Plugin configuration | Prepare the opensearch security configuration file
   command: sed -i 's/searchguard/plugins.security/g' {{ os_conf_dir }}/opensearch.yml
@@ -158,7 +158,7 @@
     bash {{ os_sec_plugin_tools_path }}/securityadmin.sh
     -cacert {{ os_conf_dir }}/root-ca.pem
     -cert {{ os_conf_dir }}/admin.pem
-    -key {{ os_conf_dir }}/admin.key
+    -key {{ os_conf_dir }}/admin-key.pem
     -f {{ os_sec_plugin_conf_path }}/internal_users.yml
     -nhnv -icl
     -h {{ hostvars[inventory_hostname]['ip'] }}
