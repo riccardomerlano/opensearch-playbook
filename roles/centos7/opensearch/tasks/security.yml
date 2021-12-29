@@ -104,13 +104,11 @@
     name: opensearch
     state: restarted
     enabled: yes
-  debugger: always
-
+  
 - name: Pause for 10 seconds to provide sometime for OpenSearch start
   pause:
     seconds: 10
-  debugger: always
-
+  
 - name: Security Plugin configuration | Copy the opensearch security internal users template
   template:
     src: internal_users.yml
@@ -118,8 +116,7 @@
     mode: 0644
   run_once: true
   when: configuration.changed
-  debugger: always
-
+  
 - name: Security Plugin configuration | Set the Admin user password
   shell: >
     sed -i '/hash: / s,{{ admin_password }},'$(bash {{ os_sec_plugin_tools_path }}/hash.sh -p {{ admin_password }} | tail -1)','
@@ -128,8 +125,7 @@
     JAVA_HOME: "{{ os_home }}/jdk"
   run_once: true
   when: configuration.changed
-  debugger: always
-
+  
 - name: Security Plugin configuration | Set the kibanaserver user pasword
   shell: >
     sed -i '/hash: / s,{{ kibanaserver_password }},'$(bash {{ os_sec_plugin_tools_path }}/hash.sh -p {{ kibanaserver_password }} | tail -1)','
@@ -138,8 +134,7 @@
     JAVA_HOME: "{{ os_home }}/jdk"
   run_once: true
   when: configuration.changed
-  debugger: always
-
+  
 ## added by riccardo
 - name: Security Plugin configuration | Set the {{ os_sec_plugin_tools_path }} scripts permission
   file:
@@ -160,8 +155,7 @@
     JAVA_HOME: "{{ os_home }}/jdk"
   run_once: true
   # when: configuration.changed
-  debugger: always
-
+  
 - name: Security Plugin configuration | Cleanup local temporary directory
   local_action:
     module: file
