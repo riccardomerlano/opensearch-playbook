@@ -1,6 +1,6 @@
 ca:
    root:
-      dn: CN=root.ca.{{ domain_name }},OU=CA,O={{ domain_name }}\, Inc.,DC={{ domain_name }}
+      dn: CN=root.ca.{{ domain_name }},OU=CA,O={{ domain_name }}\,Inc.,DC={{ domain_name }}
       keysize: 2048
       validityDays: 730
       pkPassword: none
@@ -27,7 +27,7 @@ defaults:
 nodes:
 {% for item in groups['os-cluster'] %}
   - name: {{ item }}
-    dn: CN={{ item }}.{{ domain_name }},OU=Ops,O={{ domain_name }}\, Inc.,DC={{ domain_name }}
+    dn: CN={{ item }}.{{ domain_name }},OU=Ops,O={{ domain_name }}\,Inc.,DC={{ domain_name }}
     dns: {{ item }}.{{ domain_name }}
     ip: {{ hostvars[item]['ip'] }}
 {% endfor %}
@@ -43,7 +43,7 @@ nodes:
 #
 clients:
   - name: admin
-    dn: CN=admin.{{ domain_name }},OU=Ops,O={{ domain_name }}\, Inc.,DC={{ domain_name }}
+    dn: CN=admin.{{ domain_name }},OU=Ops,O={{ domain_name }}\,Inc.,DC={{ domain_name }}
     admin: true
   - name: dashboard
-    dn: CN=admin.{{ domain_name }},OU=Ops,O={{ domain_name }}\, Inc.,DC={{ domain_name }}
+    dn: CN=admin.{{ domain_name }},OU=Ops,O={{ domain_name }}\,Inc.,DC={{ domain_name }}
