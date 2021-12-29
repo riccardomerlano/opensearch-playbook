@@ -72,7 +72,7 @@
   #when: configuration.changed
 
 - name: Execute the certificate generator script
-  command: {{ os_conf_dir }}/cert_generator.sh
+  command: "{{ os_conf_dir }}/cert_generator.sh"
 
 - name: Security Plugin configuration | Copy the security configuration file 1 to cluster
   blockinfile:
