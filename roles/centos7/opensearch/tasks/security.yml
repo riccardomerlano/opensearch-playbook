@@ -2,66 +2,77 @@
 
 ## Here we are going to use self-signed certificates for Transport (Node-Node communication) & REST API layer
 ## Using searchguard offline TLS tool to create node & root certificates
-- name: Security Plugin configuration | Create local temporary directory for certificates generation
-  local_action:
-    module: file
-    path: /tmp/opensearch-nodecerts
-    state: directory
-  run_once: true
-  register: configuration
+#- name: Security Plugin configuration | Create local temporary directory for certificates generation
+#  local_action:
+#    module: file
+#    path: /tmp/opensearch-nodecerts
+#    state: directory
+#  run_once: true
+#  register: configuration
 
-- name: Security Plugin configuration | Download certificates generation tool
-  local_action:
-    module: get_url
-    url: https://search.maven.org/remotecontent?filepath=com/floragunn/search-guard-tlstool/1.5/search-guard-tlstool-1.5.tar.gz
-    dest: /tmp/opensearch-nodecerts/search-guard-tlstool.tar.gz
-  run_once: true
-  when: configuration.changed
+#- name: Security Plugin configuration | Download certificates generation tool
+#  local_action:
+#    module: get_url
+#    url: https://search.maven.org/remotecontent?filepath=com/floragunn/search-guard-tlstool/1.5/search-guard-tlstool-1.5.tar.gz
+#    dest: /tmp/opensearch-nodecerts/search-guard-tlstool.tar.gz
+#  run_once: true
+#  when: configuration.changed
 
-- name: Security Plugin configuration | Extract the certificates generation tool
-  local_action: command chdir=/tmp/opensearch-nodecerts tar -xvf search-guard-tlstool.tar.gz
-  run_once: true
-  when: configuration.changed
+#- name: Security Plugin configuration | Extract the certificates generation tool
+#  local_action: command chdir=/tmp/opensearch-nodecerts tar -xvf search-guard-tlstool.tar.gz
+#  run_once: true
+#  when: configuration.changed
 
-- name: Security Plugin configuration | Make the executable file
-  local_action:
-    module: file
-    dest: /tmp/opensearch-nodecerts/tools/sgtlstool.sh
-    mode: a+x
-  run_once: true
-  when: configuration.changed
+#- name: Security Plugin configuration | Make the executable file
+#  local_action:
+#    module: file
+#    dest: /tmp/opensearch-nodecerts/tools/sgtlstool.sh
+#    mode: a+x
+#  run_once: true
+#  when: configuration.changed
 
-- name: Security Plugin configuration | Prepare the certificates generation template file
-  local_action:
-    module: template
-    src: tlsconfig.yml
-    dest: /tmp/opensearch-nodecerts/config/tlsconfig.yml
-  run_once: true
-  when: configuration.changed
+#- name: Security Plugin configuration | Prepare the certificates generation template file
+#  local_action:
+#    module: template
+#    src: tlsconfig.yml
+#    dest: /tmp/opensearch-nodecerts/config/tlsconfig.yml
+#  run_once: true
+#  when: configuration.changed
 
-- name: Security Plugin configuration | Generate the node & admin certificates in local
-  local_action:
-    module: command /tmp/opensearch-nodecerts/tools/sgtlstool.sh -c /tmp/opensearch-nodecerts/config/tlsconfig.yml -ca -crt -t /tmp/opensearch-nodecerts/config/
-  run_once: true
-  when: configuration.changed
+#- name: Security Plugin configuration | Generate the node & admin certificates in local
+#  local_action:
+#    module: command /tmp/opensearch-nodecerts/tools/sgtlstool.sh -c /tmp/opensearch-nodecerts/config/tlsconfig.yml -ca -crt -t /tmp/opensearch-nodecerts/config/
+#  run_once: true
+#  when: configuration.changed
 
-- name: Security Plugin configuration | Copy the node & admin certificates to opensearch nodes
-  copy:
-    src: "/tmp/opensearch-nodecerts/config/{{ item }}"
-    dest: "{{ os_conf_dir }}"
-    mode: 0600
-  with_items:
-    - root-ca.pem
-    - root-ca.key
-    - "{{ inventory_hostname }}.key"
-    - "{{ inventory_hostname }}.pem"
-    - "{{ inventory_hostname }}_http.key"
-    - "{{ inventory_hostname }}_http.pem"
-    - admin.key
-    - admin.pem
-    - dashboard.key
-    - dashboard.pem
-  when: configuration.changed
+#- name: Security Plugin configuration | Copy the node & admin certificates to opensearch nodes
+#  copy:
+#    src: "/tmp/opensearch-nodecerts/config/{{ item }}"
+#    dest: "{{ os_conf_dir }}"
+#    mode: 0600
+#  with_items:
+#    - root-ca.pem
+#    - root-ca.key
+#    - "{{ inventory_hostname }}.key"
+#    - "{{ inventory_hostname }}.pem"
+#    - "{{ inventory_hostname }}_http.key"
+#    - "{{ inventory_hostname }}_http.pem"
+#    - admin.key
+#    - admin.pem
+#    - dashboard.key
+#    - dashboard.pem
+#  when: configuration.changed
+
+- name: Copy certificate generator script
+  template:
+    src: cert_generator.sh
+    dest: "{{ os_conf_dir }}/cert_generator.sh"
+    mode: 0744
+  run_once: true
+  #when: configuration.changed
+
+- name: Execute the certificate generator script
+  command: {{ os_conf_dir }}/cert_generator.sh
 
 - name: Security Plugin configuration | Copy the security configuration file 1 to cluster
   blockinfile:
@@ -115,7 +126,7 @@
     dest: "{{ os_sec_plugin_conf_path }}/internal_users.yml"
     mode: 0644
   run_once: true
-  when: configuration.changed
+  #when: configuration.changed
   
 - name: Security Plugin configuration | Set the Admin user password
   shell: >
@@ -124,7 +135,7 @@
   environment:
     JAVA_HOME: "{{ os_home }}/jdk"
   run_once: true
-  when: configuration.changed
+  #when: configuration.changed
   
 - name: Security Plugin configuration | Set the kibanaserver user pasword
   shell: >
@@ -133,7 +144,7 @@
   environment:
     JAVA_HOME: "{{ os_home }}/jdk"
   run_once: true
-  when: configuration.changed
+  #when: configuration.changed
   
 ## added by riccardo
 - name: Security Plugin configuration | Set the {{ os_sec_plugin_tools_path }} scripts permission
@@ -156,10 +167,10 @@
   run_once: true
   # when: configuration.changed
   
-- name: Security Plugin configuration | Cleanup local temporary directory
-  local_action:
-    module: file
-    path: /tmp/opensearch-nodecerts
-    state: absent
-  run_once: true
-  when: configuration.changed
+#- name: Security Plugin configuration | Cleanup local temporary directory
+#  local_action:
+#    module: file
+#    path: /tmp/opensearch-nodecerts
+#    state: absent
+#  run_once: true
+#  when: configuration.changed
