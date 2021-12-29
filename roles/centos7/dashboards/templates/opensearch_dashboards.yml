@@ -8,7 +8,7 @@ opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
 
 server.ssl.enabled: true
 server.ssl.certificate: {{ os_conf_dir }}/dashboard.pem
-server.ssl.key: {{ os_conf_dir }}/dashboard.key
+server.ssl.key: {{ os_conf_dir }}/dashboard-key.pem
 opensearch.ssl.certificateAuthorities: ["{{ os_conf_dir }}/root-ca.pem"]
 
 opensearch_security.multitenancy.enabled: true

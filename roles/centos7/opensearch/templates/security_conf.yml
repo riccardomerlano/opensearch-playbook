@@ -6,15 +6,14 @@ plugins.security.check_snapshot_restore_write_privileges: true
 plugins.security.restapi.roles_enabled: ["all_access", "security_rest_api_access"]
 
 plugins.security.ssl.transport.pemcert_filepath: os1.pem
-plugins.security.ssl.transport.pemkey_filepath: os1.key
+plugins.security.ssl.transport.pemkey_filepath: os1-key.pem
 plugins.security.ssl.transport.pemtrustedcas_filepath: root-ca.pem
 plugins.security.ssl.transport.enforce_hostname_verification: false
-plugins.security.ssl.transport.resolve_hostname: false
 plugins.security.ssl.http.enabled: true
-plugins.security.ssl.http.pemcert_filepath: os1_http.pem
-plugins.security.ssl.http.pemkey_filepath: os1_http.key
+plugins.security.ssl.http.pemcert_filepath: os1.pem
+plugins.security.ssl.http.pemkey_filepath: os1-key.pem
 plugins.security.ssl.http.pemtrustedcas_filepath: root-ca.pem
-plugins.security.nodes_dn:
-- CN=os1.localhost,OU=Ops,O=localhost\,Inc.,DC=localhost
 plugins.security.authcz.admin_dn:
-- CN=admin.localhost,OU=Ops,O=localhost\,Inc.,DC=localhost
+  - 'CN=ADMIN,OU=UNIT,O=ORG,L=MILANO,ST=LOMBARDIA,C=IT'
+plugins.security.nodes_dn:
+  - 'CN={{ inventory_hostname }}.{{ domain_name }},OU=UNIT,O=ORG,L=MILANO,ST=LOMBARDIA,C=IT'
