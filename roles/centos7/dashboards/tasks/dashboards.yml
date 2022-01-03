@@ -1,17 +1,45 @@
 ---
 
-- name: Dashboards Install | Download opensearch dashbaord {{ os_dashboards_version }} (URL={{ dashboards_download_url }})
+- name: Dashboards Install | [OnLine] Download opensearch dashbaord {{ os_dashboards_version }} (URL={{ dashboards_download_url }})
   get_url:
     url: "{{ dashboards_download_url }}"
     dest: "/tmp/opensearch-dashboards.tar.gz"
-  register: download
+  register: online_download
+  when: not offline_installation
+
+- name: Dashboards Install | [OffLine] Create local temporary directory for zip download
+  local_action:
+    module: file
+    path: "{{ temp_tar_dir }}"
+    state: directory
+  run_once: true
+  when: offline_installation
+
+- name: Dashboards Install | [OffLine] Download opensearch dashbaord {{ os_dashboards_version }} (URL={{ dashboards_download_url }})
+  delegate_to: localhost
+  get_url:
+    url: "{{ dashboards_download_url }}"
+    dest: "{{ temp_tar_dir }}"
+  register: offline_download
+  when: offline_installation
+
+- name: Dashboards Install | [OffLine] Copy opensearch dashboards tar through ssh
+  copy:
+    src: "{{ temp_tar_dir }}/opensearch-dashboards-{{ os_dashboards_version }}-linux-x64.tar.gz"
+    dest: "/tmp/opensearch-dashboards.tar.gz"
+    group: "{{ os_user }}"
+    owner: "{{ os_user }}"
+  run_once: true
+  when: 
+    - offline_installation
+    - offline_download.changed
 
 - name: Dashboards Install | Create opensearch user
   user:
     name: "{{ os_user }}"
     state: present
     shell: /bin/bash
-  when: download.changed
+  when: (online_download.changed) or (offline_download.changed)
 
 - name: Dashboards Install | Create home directory
   file:
@@ -19,11 +47,11 @@
     state: directory
     owner: "{{ os_user }}"
     group: "{{ os_user }}"
-  when: download.changed
+  when: (online_download.changed) or (offline_download.changed)
 
 - name: Dashboards Install | Extract the tar file
   command: chdir=/tmp/ tar -xvzf opensearch-dashboards.tar.gz -C "{{ os_dashboards_home }}" --strip-components=1
-  when: download.changed
+  when: (online_download.changed) or (offline_download.changed)
 
 - name: Dashboards Install | Copy the dashboard certificates to opensearch nodes
   copy:
