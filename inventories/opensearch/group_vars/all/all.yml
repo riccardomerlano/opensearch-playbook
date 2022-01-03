@@ -3,7 +3,7 @@
 os_cluster_name: development-cluster
 
 # opensearch version
-os_version: "1.2.2"
+os_version: "1.2.3"
 
 # opensearch dashboards version
 os_dashboards_version: "1.2.0"
@@ -31,6 +31,3 @@ xmx_value: 2
 
 # Cluster type whether its single node or multi-node
 cluster_type: single-node
-
-# Directory in host system where certificates are stored
-os_conf_dir: /usr/share/opensearch/config

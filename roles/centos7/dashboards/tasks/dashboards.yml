@@ -25,6 +25,17 @@
   command: chdir=/tmp/ tar -xvzf opensearch-dashboards.tar.gz -C "{{ os_dashboards_home }}" --strip-components=1
   when: download.changed
 
+- name: Copy the dashboard certificates to opensearch nodes
+  copy:
+    src: "{{ playbook_dir }}"
+    dest: "{{ os_dash_conf_dir }}"
+    mode: 0600
+  with_items:
+    - root-ca.pem
+    - root-ca-key.pem
+    - dashboard-key.pem
+    - dashboard.pem
+
 - name: Dashboards Install | Copy Configuration File
   template:
     src: opensearch_dashboards.yml

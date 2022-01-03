@@ -63,16 +63,34 @@
 #    - dashboard.pem
 #  when: configuration.changed
 
-- name: Copy certificate generator script
+- name: Render generator script template
+  delegate_to: localhost
   template:
     src: cert_generator.sh
-    dest: "{{ os_conf_dir }}/cert_generator.sh"
+    dest: "{{ playbook_dir }}/cert_generator.sh"
     mode: 0744
   run_once: true
   #when: configuration.changed
 
 - name: Execute the certificate generator script
-  command: "{{ os_conf_dir }}/cert_generator.sh"
+  delegate_to: localhost
+  command: "{{ playbook_dir }}/cert_generator.sh"
+
+- name: Copy the node & admin certificates to opensearch nodes
+  copy:
+    src: "{{ playbook_dir }}"
+    dest: "{{ os_conf_dir }}"
+    mode: 0600
+  with_items:
+    - root-ca.pem
+    - root-ca-key.pem
+    - "{{ inventory_hostname }}-key.pem"
+    - "{{ inventory_hostname }}.pem"
+#    - "{{ inventory_hostname }}_http-key.pem"
+#    - "{{ inventory_hostname }}_http.pem"
+    - admin-key.pem
+    - admin.pem
+
 
 - name: Security Plugin configuration | Copy the security configuration file 1 to cluster
   blockinfile:
