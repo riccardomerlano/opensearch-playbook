@@ -20,7 +20,7 @@
   get_url:
     url: "{{ opensearch_download_url }}"
     dest: "{{ temp_tar_dir }}"
-    register: offline_download
+  register: offline_download
   when: offline_installation
 
 - name: OpenSearch Install | [OffLine] Copy Opensearch tar through ssh
