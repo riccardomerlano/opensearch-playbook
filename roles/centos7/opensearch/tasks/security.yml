@@ -67,18 +67,18 @@
   delegate_to: localhost
   template:
     src: cert_generator.sh
-    dest: "{{ playbook_dir }}/cert_generator.sh"
+    dest: "{{ localhost_certs_dir }}/cert_generator.sh"
     mode: 0744
   run_once: true
   #when: configuration.changed
 
 - name: Execute the certificate generator script
   delegate_to: localhost
-  command: "{{ playbook_dir }}/cert_generator.sh"
+  command: "{{localhost_certs_dir }}/cert_generator.sh"
 
 - name: Copy the node & admin certificates to opensearch nodes
   copy:
-    src: "{{ playbook_dir }}"
+    src: "{{ localhost_certs_dir }}"
     dest: "{{ os_conf_dir }}"
     mode: 0600
   with_items:
