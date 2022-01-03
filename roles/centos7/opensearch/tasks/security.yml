@@ -81,13 +81,13 @@
 
 - name: Security Plugin configuration | Execute the certificate generator script
   delegate_to: localhost
-  command: "{{localhost_certs_dir }}/cert_generator.sh"
+  command: "{{ localhost_certs_dir }}/cert_generator.sh"
   run_once: true
 
 - name: Security Plugin configuration | Copy the node & admin certificates to opensearch nodes
   copy:
     src: "{{ localhost_certs_dir }}"
-    dest: "{{ os_conf_dir }}"
+    dest: "{{ os_conf_dir }}/{{ item }}"
     mode: 0600
   with_items:
     - root-ca.pem
