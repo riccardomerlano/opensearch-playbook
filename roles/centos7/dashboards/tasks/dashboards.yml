@@ -36,6 +36,13 @@
     - dashboard-key.pem
     - dashboard.pem
 
+- name: Security Plugin configuration | Set the file ownerships
+  file:
+    dest: "{{ os_dashboards_home }}"
+    owner: "{{ os_user }}"
+    group: "{{ os_user }}"
+    recurse: yes
+
 - name: Dashboards Install | Set the config folder permission
   file:
     dest: "{{ os_dash_conf_dir }}"
