@@ -4,7 +4,7 @@
   get_url:
     url: "{{ logstash_download_url }}"
     dest: "/tmp/logstash.tar.gz"
-  register: online_download
+  register: download
   when: not offline_installation
 
 - name: Logstash Install | [OffLine] Create local temporary directory for zip download
@@ -20,7 +20,7 @@
   get_url:
     url: "{{ logstash_download_url }}"
     dest: "{{ temp_tar_dir }}"
-  register: offline_download
+  register: download
   when: offline_installation
 
 - name: Logstash Install | [OffLine] Copy logstash OSS tar through ssh
@@ -32,14 +32,14 @@
   run_once: true
   when: 
     - offline_installation
-    - offline_download.changed
+    - download.changed
 
 - name: Logstash Install | Create logstash user
   user:
     name: "{{ logstash_user }}"
     state: present
     shell: /bin/bash
-  when: (online_download.changed) or (offline_download.changed)
+  when: download.changed
 
 - name: Logstash Install | Create home directory
   file:
@@ -47,11 +47,11 @@
     state: directory
     owner: "{{ logstash_user }}"
     group: "{{ logstash_user }}"
-  when: (online_download.changed) or (offline_download.changed)
+  when: download.changed
 
 - name: Logstash Install | Extract the tar file
   command: chdir=/tmp/ tar -xvzf logstash.tar.gz -C "{{ logstash_home }}" --strip-components=1
-  when: (online_download.changed) or (offline_download.changed)
+  when: download.changed
 
 - name: Logstash Install | Update data directory
   file:
@@ -59,11 +59,11 @@
     state: directory
     owner: "{{ logstash_user }}"
     group: "{{ logstash_user }}"
-  when: (online_download.changed) or (offline_download.changed)
+  when: download.changed
 
 - name: Logstash Install | Remove sample pipeline in config dir
   command: rm --force {{ logstash_conf_dir }}/logstash-sample.conf
-  when: (online_download.changed) or (offline_download.changed)  
+  when: download.changed  
 
 - name: Logstash Install | Create pipeline directory {{ logstash_pipeline_dir }}
   file:
@@ -71,7 +71,7 @@
     state: directory
     owner: "{{ logstash_user }}"
     group: "{{ logstash_user }}"
-  when: (online_download.changed) or (offline_download.changed)  
+  when: download.changed  
 
 - name: Logstash Install | Copy logstash-sample.conf in {{ logstash_pipeline_dir }}
   template:
@@ -81,7 +81,7 @@
     group: "{{ logstash_user }}"
     mode: 0644
     backup: no
-  when: (online_download.changed) or (offline_download.changed)    
+  when: download.changed    
 
 - name: Logstash Install | Copy (and backup) startup.options File in {{ logstash_conf_dir }}
   template:
@@ -91,7 +91,7 @@
     group: "{{ logstash_user }}"
     mode: 0644
     backup: yes
-  when: (online_download.changed) or (offline_download.changed)  
+  when: download.changed  
 
 - name: Logstash Install | Run system-install script
   command: "{{ logstash_home }}/bin/system-install"

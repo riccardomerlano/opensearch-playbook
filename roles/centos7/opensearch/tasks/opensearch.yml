@@ -4,7 +4,7 @@
   get_url:
     url: "{{ opensearch_download_url }}"
     dest: "/tmp/opensearch.tar.gz"
-  register: online_download
+  register: download
   when: not offline_installation
 
 - name: OpenSearch Install | [OffLine] Create local temporary directory for zip download
@@ -20,7 +20,7 @@
   get_url:
     url: "{{ opensearch_download_url }}"
     dest: "{{ temp_tar_dir }}"
-  register: offline_download
+  register: download
   when: offline_installation
 
 - name: OpenSearch Install | [OffLine] Copy Opensearch tar through ssh
@@ -32,14 +32,14 @@
   run_once: true
   when: 
     - offline_installation
-    - offline_download.changed
+    - download.changed
 
 - name: OpenSearch Install | Create opensearch user
   user:
     name: "{{ os_user }}"
     state: present
     shell: /bin/bash
-  when: (online_download.changed) or (offline_download.changed)
+  when: download.changed
 
 - name: OpenSearch Install | Create home directory
   file:
@@ -47,11 +47,11 @@
     state: directory
     owner: "{{ os_user }}"
     group: "{{ os_user }}"
-  when: (online_download.changed) or (offline_download.changed)
+  when: download.changed
 
 - name: OpenSearch Install | Extract the tar file
   command: chdir=/tmp/ tar -xvzf opensearch.tar.gz -C "{{ os_home }}" --strip-components=1
-  when: (online_download.changed) or (offline_download.changed)
+  when: download.changed
 
 - name: OpenSearch Install | Copy Configuration File
   template:
