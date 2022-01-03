@@ -42,4 +42,4 @@ offline_installation: true
 
 # Master machine's directory where zipped component are temporarely saved 
 # (make sense only if "offline_installation: true")
-temp_tar_dir: "{{ playbook_dir }}/component_tar"
+temp_tar_dir: "/tmp/opensearch_component_tar"

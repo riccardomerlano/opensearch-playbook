@@ -5,7 +5,7 @@
     url: "{{ opensearch_download_url }}"
     dest: "/tmp/opensearch.tar.gz"
   register: online_download
-  when: ! offline_installation
+  when: not offline_installation
 
 - name: OpenSearch Install | [OffLine] Create local temporary directory for zip download
   local_action:
@@ -20,12 +20,14 @@
   get_url:
     url: "{{ opensearch_download_url }}"
     dest: "{{ temp_tar_dir }}"
-  register: offline_download
+    group: "{{ os_user }}"
+    owner: "{{ os_user }}"
+    register: offline_download
   when: offline_installation
 
 - name: OpenSearch Install | [OffLine] Copy Opensearch tar through ssh
   copy:
-    src: "{{ temp_tar_dir }}"
+    src: "{{ temp_tar_dir }}/opensearch-{{ os_version }}-linux-x64.tar.gz"
     dest: "/tmp/opensearch.tar.gz"
   run_once: true
   when: 
