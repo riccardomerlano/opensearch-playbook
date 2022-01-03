@@ -27,8 +27,6 @@
   copy:
     src: "{{ temp_tar_dir }}/opensearch-dashboards-{{ os_dashboards_version }}-linux-x64.tar.gz"
     dest: "/tmp/opensearch-dashboards.tar.gz"
-    group: "{{ os_user }}"
-    owner: "{{ os_user }}"
   run_once: true
   when: 
     - offline_installation

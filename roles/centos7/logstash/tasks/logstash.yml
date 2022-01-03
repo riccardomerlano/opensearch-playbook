@@ -27,8 +27,6 @@
   copy:
     src: "{{ temp_tar_dir }}/logstash-oss-with-opensearch-output-plugin-{{ logstash_version }}-linux-x64.tar.gz"
     dest: "/tmp/logstash.tar.gz"
-    group: "{{ os_user }}"
-    owner: "{{ os_user }}"
   run_once: true
   when: 
     - offline_installation
