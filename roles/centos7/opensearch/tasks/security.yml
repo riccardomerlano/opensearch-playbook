@@ -63,7 +63,14 @@
 #    - dashboard.pem
 #  when: configuration.changed
 
-- name: Render generator script template
+- name: Security Plugin configuration | Create local directory for certificates generation
+  local_action:
+    module: file
+    path: "{{ localhost_certs_dir }}"
+    state: directory
+  run_once: true
+
+- name: Security Plugin configuration | Render generator script template
   delegate_to: localhost
   template:
     src: cert_generator.sh
@@ -72,11 +79,12 @@
   run_once: true
   #when: configuration.changed
 
-- name: Execute the certificate generator script
+- name: Security Plugin configuration | Execute the certificate generator script
   delegate_to: localhost
   command: "{{localhost_certs_dir }}/cert_generator.sh"
+  run_once: true
 
-- name: Copy the node & admin certificates to opensearch nodes
+- name: Security Plugin configuration | Copy the node & admin certificates to opensearch nodes
   copy:
     src: "{{ localhost_certs_dir }}"
     dest: "{{ os_conf_dir }}"
@@ -90,6 +98,7 @@
 #    - "{{ inventory_hostname }}_http.pem"
     - admin-key.pem
     - admin.pem
+  run_once: true
 
 
 - name: Security Plugin configuration | Copy the security configuration file 1 to cluster
