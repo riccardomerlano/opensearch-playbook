@@ -86,8 +86,8 @@
 
 - name: Security Plugin configuration | Copy the node & admin certificates to opensearch nodes
   copy:
-    src: "{{ localhost_certs_dir }}"
-    dest: "{{ os_conf_dir }}/{{ item }}"
+    src: "{{ localhost_certs_dir }}/{{ item }}"
+    dest: "{{ os_conf_dir }}"
     mode: 0600
   with_items:
     - root-ca.pem
