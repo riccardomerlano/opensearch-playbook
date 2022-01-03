@@ -28,7 +28,7 @@
 - name: Copy the dashboard certificates to opensearch nodes
   copy:
     src: "{{ localhost_certs_dir }}"
-    dest: "{{ os_dash_conf_dir }}"
+    dest: "{{ os_dash_conf_dir }}/{{ item }}"
     mode: 0600
   with_items:
     - root-ca.pem
