@@ -34,3 +34,12 @@ cluster_type: single-node
 
 # Master machine's directory where certificates are generated
 localhost_certs_dir: "{{ playbook_dir }}/cert"
+
+#### FOR "OFFLINE" INSTALLATION ####
+
+# Boolean value for offline installation: set true if the machine do not have access to outer internet
+offline_installation: true
+
+# Master machine's directory where zipped component are temporarely saved 
+# (make sense only if "offline_installation: true")
+temp_tar_dir: "{{ playbook_dir }}/component_tar"
