@@ -71,8 +71,8 @@
     dest: "{{ os_dash_conf_dir }}"
     mode: 0600
   with_items:
-    - root-ca.pem
-    - root-ca-key.pem
+    - dashboard.pem
+    - dashboard-key.pem
   when: proprietary_dashboard_cert == "no_cert"
 
 ### LOCAL PROPRIETARY CERT ###
