@@ -35,7 +35,14 @@
     - download.changed
 
 ### OFFLINE MODE ###
-
+- name: Dashboards Install | [offline] Copy opensearch dashboards tar in temp directory for installation mode indipendent part
+  delegate_to: localhost
+  copy:
+    src: "{{ offline_tar_dir }}/opensearch-dashboards-{{ os_dashboards_version }}-linux-x64.tar.gz"
+    dest: "/tmp/opensearch-dashboards.tar.gz"
+  run_once: true
+  register: download
+  when: installation_mode == "offline"
 
 ### INSTALLATION MODE INDIPENDENT PART ###
 - name: Dashboards Install | Create opensearch user

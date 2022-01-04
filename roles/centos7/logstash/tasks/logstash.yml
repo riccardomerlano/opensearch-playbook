@@ -35,7 +35,14 @@
     - download.changed
 
 ### OFFLINE MODE ###
-
+- name: Logstash Install | [offline] Copy logstash OSS tar in temp directory for installation mode indipendent part
+  delegate_to: localhost
+  copy:
+    src: "{{ offline_tar_dir }}/logstash-oss-with-opensearch-output-plugin-{{ logstash_version }}-linux-x64.tar.gz"
+    dest: "/tmp/logstash.tar.gz"
+  run_once: true
+  register: download
+  when: installation_mode == "offline"
 
 ### INSTALLATION MODE INDIPENDENT PART ###
 - name: Logstash Install | Create logstash user

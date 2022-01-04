@@ -35,7 +35,7 @@
     - download.changed
 
 ### OFFLINE MODE ###
-- name: OpenSearch Install | [offline] Copy Opensearch tar in temp directory for installation mode indpendent part
+- name: OpenSearch Install | [offline] Copy Opensearch tar in temp directory for installation mode indipendent part
   delegate_to: localhost
   copy:
     src: "{{ offline_tar_dir }}/opensearch-{{ os_version }}-linux-x64.tar.gz"
