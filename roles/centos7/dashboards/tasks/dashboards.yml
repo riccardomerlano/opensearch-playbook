@@ -50,7 +50,7 @@
     name: "{{ os_user }}"
     state: present
     shell: /bin/bash
-  # when: download.changed
+  when: download.changed
 
 - name: Dashboards Install | Create home directory
   file:
@@ -58,7 +58,7 @@
     state: directory
     owner: "{{ os_user }}"
     group: "{{ os_user }}"
-  # when: download.changed
+  when: download.changed
 
 - name: Dashboards Install | Extract the tar file
   command: chdir=/tmp/ tar -xvzf opensearch-dashboards.tar.gz -C "{{ os_dashboards_home }}" --strip-components=1
@@ -83,6 +83,9 @@
     src: "{{ proprietary_dashboard_cert_dir }}/{{ item }}"
     dest: "{{ os_dash_conf_dir }}"
     mode: 0600
+  with_items:
+    - "{{ proprietary_dashboard_cert_name }}"
+    - "{{ proprietary_dashboard_key_name }}"
   when: proprietary_dashboard_cert == "local"
 
 ### REMOTE PROPRIETARY CERT ###
