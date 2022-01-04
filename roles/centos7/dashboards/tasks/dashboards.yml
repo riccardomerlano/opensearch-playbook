@@ -50,7 +50,7 @@
     name: "{{ os_user }}"
     state: present
     shell: /bin/bash
-  when: download.changed
+  # when: download.changed
 
 - name: Dashboards Install | Create home directory
   file:
@@ -58,11 +58,11 @@
     state: directory
     owner: "{{ os_user }}"
     group: "{{ os_user }}"
-  when: download.changed
+  # when: download.changed
 
 - name: Dashboards Install | Extract the tar file
   command: chdir=/tmp/ tar -xvzf opensearch-dashboards.tar.gz -C "{{ os_dashboards_home }}" --strip-components=1
-  when: download.changed
+  # when: download.changed
 
 ### NO PROPRIETARY CERT ###
 - name: Dashboards Install | [No-prop-cert] Copy the dashboard certificates to opensearch nodes

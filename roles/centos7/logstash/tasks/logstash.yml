@@ -43,14 +43,14 @@
   run_once: true
   register: download
   when: installation_mode == "offline"
+### END OF INSTALLATION MODE ###
 
-### INSTALLATION MODE INDIPENDENT PART ###
 - name: Logstash Install | Create logstash user
   user:
     name: "{{ logstash_user }}"
     state: present
     shell: /bin/bash
-  when: download.changed
+  # when: download.changed
 
 - name: Logstash Install | Create home directory
   file:
@@ -58,11 +58,11 @@
     state: directory
     owner: "{{ logstash_user }}"
     group: "{{ logstash_user }}"
-  when: download.changed
+  # when: download.changed
 
 - name: Logstash Install | Extract the tar file
   command: chdir=/tmp/ tar -xvzf logstash.tar.gz -C "{{ logstash_home }}" --strip-components=1
-  when: download.changed
+  # when: download.changed
 
 - name: Logstash Install | Update data directory
   file:
@@ -70,11 +70,11 @@
     state: directory
     owner: "{{ logstash_user }}"
     group: "{{ logstash_user }}"
-  when: download.changed
+  # when: download.changed
 
 - name: Logstash Install | Remove sample pipeline in config dir
   command: rm --force {{ logstash_conf_dir }}/logstash-sample.conf
-  when: download.changed  
+  # when: download.changed  
 
 - name: Logstash Install | Create pipeline directory {{ logstash_pipeline_dir }}
   file:
@@ -82,7 +82,7 @@
     state: directory
     owner: "{{ logstash_user }}"
     group: "{{ logstash_user }}"
-  when: download.changed  
+  # when: download.changed  
 
 - name: Logstash Install | Copy logstash-sample.conf in {{ logstash_pipeline_dir }}
   template:
@@ -92,7 +92,7 @@
     group: "{{ logstash_user }}"
     mode: 0644
     backup: no
-  when: download.changed    
+  # when: download.changed    
 
 - name: Logstash Install | Copy (and backup) startup.options File in {{ logstash_conf_dir }}
   template:
@@ -102,7 +102,7 @@
     group: "{{ logstash_user }}"
     mode: 0644
     backup: yes
-  when: download.changed  
+  # when: download.changed  
 
 - name: Logstash Install | Run system-install script
   command: "{{ logstash_home }}/bin/system-install"
