@@ -65,3 +65,6 @@ proprietary_dashboard_cert: "local"
 # Directory where the proprietary certificate and key can be found
 # (make sense only for "local" or "remote")
 proprietary_dashboard_cert_dir: "{{ playbook_dir }}/proprietary_cert"
+
+proprietary_dashboard_cert_name: "dash1.pem"
+proprietary_dashboard_key_name: "dash1-key.pem"
