@@ -87,12 +87,12 @@
   when: proprietary_dashboard_cert == "local"
 
 ### REMOTE PROPRIETARY CERT ###
-- name: Dashboards Install | [Remote-prop-cert] Copy the dashboard certificates to opensearch nodes
-  command: "mv {{ proprietary_dashboard_cert_dir }}/{{ item }} {{ os_dash_conf_dir }}/{{ item }}"
-  with_items:
-    - "{{ proprietary_dashboard_cert_name }}"
-    - "{{ proprietary_dashboard_key_name }}"
-  when: proprietary_dashboard_cert == "remote"
+# - name: Dashboards Install | [Remote-prop-cert] Copy the dashboard certificates to opensearch nodes
+#   command: "cp {{ proprietary_dashboard_cert_dir }}/{{ item }} {{ os_dash_conf_dir }}/{{ item }}"
+#   with_items:
+#     - "{{ proprietary_dashboard_cert_name }}"
+#     - "{{ proprietary_dashboard_key_name }}"
+#   when: proprietary_dashboard_cert == "remote"
 ### END OF PROPRIETARY CERT ###
 
 - name: Dashboards Install | Copy the dashboard certificates to opensearch nodes
