@@ -143,9 +143,9 @@
     state: restarted
     enabled: yes
   
-- name: Pause for 10 seconds to provide sometime for OpenSearch start
+- name: Pause for 20 seconds to provide sometime for OpenSearch start
   pause:
-    seconds: 10
+    seconds: 20
   
 - name: Security Plugin configuration | Copy the opensearch security internal users template
   template:
