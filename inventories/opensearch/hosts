@@ -3,6 +3,7 @@ os1 ansible_host=localhost  ansible_user=root ip=10.132.0.24 roles=data,master
 # List all the nodes in the os cluster
 [os-cluster]
 os1
+os2
 
 # List all the Master eligible nodes under this group
 [master]

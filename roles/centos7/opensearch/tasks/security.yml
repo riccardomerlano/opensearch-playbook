@@ -98,8 +98,6 @@
 #    - "{{ inventory_hostname }}_http.pem"
     - admin-key.pem
     - admin.pem
-  run_once: true
-
 
 - name: Security Plugin configuration | Copy the security configuration file 1 to cluster
   blockinfile:
@@ -179,6 +177,7 @@
     path: "{{ os_sec_plugin_tools_path }}"
     mode: 0755
     recurse: yes
+  run_once: true
 
 - name: Security Plugin configuration | Initialize the opensearch security index in opensearch
   shell: >
