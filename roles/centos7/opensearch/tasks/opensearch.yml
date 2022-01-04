@@ -5,7 +5,7 @@
   get_url:
     url: "{{ opensearch_download_url }}"
     dest: "/tmp/opensearch.tar.gz"
-  register: download
+  register: online_download
   when: installation_mode == "online"
 
 ### SSH MODE ###
@@ -22,7 +22,7 @@
   get_url:
     url: "{{ opensearch_download_url }}"
     dest: "{{ temp_tar_dir }}"
-  register: download
+  register: ssh_download
   when: installation_mode == "ssh"
 
 - name: OpenSearch Install | [ssh] Copy Opensearch tar through ssh
@@ -41,7 +41,7 @@
     src: "{{ offline_tar_dir }}/opensearch-{{ os_version }}-linux-x64.tar.gz"
     dest: "/tmp/opensearch.tar.gz"
   run_once: true
-  register: download
+  register: offline_download
   when: installation_mode == "offline"
 ### END OF INSTALLATION MODE ###
 
@@ -50,7 +50,7 @@
     name: "{{ os_user }}"
     state: present
     shell: /bin/bash
-  when: download.changed
+  when: (online_download.changed) or (ssh_download.changed) or (offline_download.changed)
 
 - name: OpenSearch Install | Create home directory
   file:
@@ -58,11 +58,11 @@
     state: directory
     owner: "{{ os_user }}"
     group: "{{ os_user }}"
-  when: download.changed
+  when: (online_download.changed) or (ssh_download.changed) or (offline_download.changed)
 
 - name: OpenSearch Install | Extract the tar file
   command: chdir=/tmp/ tar -xvzf opensearch.tar.gz -C "{{ os_home }}" --strip-components=1
-  when: download.changed
+  when: (online_download.changed) or (ssh_download.changed) or (offline_download.changed)
 
 - name: OpenSearch Install | Copy Configuration File
   template:
