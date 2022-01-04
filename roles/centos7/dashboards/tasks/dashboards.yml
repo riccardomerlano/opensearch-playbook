@@ -43,8 +43,8 @@
   run_once: true
   register: download
   when: installation_mode == "offline"
+### END OF INSTALLATION MODE ###
 
-### INSTALLATION MODE INDIPENDENT PART ###
 - name: Dashboards Install | Create opensearch user
   user:
     name: "{{ os_user }}"
@@ -64,7 +64,8 @@
   command: chdir=/tmp/ tar -xvzf opensearch-dashboards.tar.gz -C "{{ os_dashboards_home }}" --strip-components=1
   when: download.changed
 
-- name: Dashboards Install | Copy the dashboard certificates to opensearch nodes
+### NO PROPRIETARY CERT ###
+- name: Dashboards Install | [No-prop-cert] Copy the dashboard certificates to opensearch nodes
   copy:
     src: "{{ localhost_certs_dir }}/{{ item }}"
     dest: "{{ os_dash_conf_dir }}"
@@ -74,6 +75,21 @@
     - root-ca-key.pem
     - dashboard-key.pem
     - dashboard.pem
+  when: proprietary_dashboard_cert == "no_cert"
+
+### LOCAL PROPRIETARY CERT ###
+- name: Dashboards Install | [Local-prop-cert] Copy the dashboard certificates to opensearch nodes
+  copy:
+    src: "{{ proprietary_dashboard_cert_dir }}"
+    dest: "{{ os_dash_conf_dir }}"
+    mode: 0600
+  when: proprietary_dashboard_cert == "local"
+
+### REMOTE PROPRIETARY CERT ###
+- name: Dashboards Install | [Remote-prop-cert] Copy the dashboard certificates to opensearch nodes
+  command: "mv {{ proprietary_dashboard_cert_dir }} {{ os_dash_conf_dir }}"
+  when: proprietary_dashboard_cert == "remote"
+### END OF PROPRIETARY CERT ###
 
 - name: Security Plugin configuration | Set the file ownerships
   file:
