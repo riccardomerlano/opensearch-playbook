@@ -62,7 +62,7 @@
 
 - name: Dashboards Install | Extract the tar file
   command: chdir=/tmp/ tar -xvzf opensearch-dashboards.tar.gz -C "{{ os_dashboards_home }}" --strip-components=1
-  # when: download.changed
+  when: download.changed
 
 ### NO PROPRIETARY CERT ###
 - name: Dashboards Install | [No-prop-cert] Copy the dashboard certificates to opensearch nodes
@@ -73,8 +73,6 @@
   with_items:
     - root-ca.pem
     - root-ca-key.pem
-    - dashboard-key.pem
-    - dashboard.pem
   when: proprietary_dashboard_cert == "no_cert"
 
 ### LOCAL PROPRIETARY CERT ###
@@ -93,6 +91,15 @@
   command: "mv {{ proprietary_dashboard_cert_dir }} {{ os_dash_conf_dir }}"
   when: proprietary_dashboard_cert == "remote"
 ### END OF PROPRIETARY CERT ###
+
+- name: Dashboards Install | [No-prop-cert] Copy the dashboard certificates to opensearch nodes
+  copy:
+    src: "{{ localhost_certs_dir }}/{{ item }}"
+    dest: "{{ os_dash_conf_dir }}"
+    mode: 0600
+  with_items:
+    - root-ca.pem
+    - root-ca-key.pem
 
 - name: Security Plugin configuration | Set the file ownerships
   file:
