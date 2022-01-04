@@ -32,7 +32,7 @@
   run_once: true
   when: 
     - installation_mode == "ssh"
-    - download.changed
+    - ssh_download.changed
 
 ### OFFLINE MODE ###
 - name: OpenSearch Install | [offline] Copy Opensearch tar in temp directory for installation mode indipendent part
