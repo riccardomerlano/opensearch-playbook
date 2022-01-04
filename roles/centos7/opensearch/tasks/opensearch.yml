@@ -1,37 +1,50 @@
 ---
 
+### ONLINE MODE ###
 - name: OpenSearch Install | [OnLine] Download opensearch {{ os_version }} (URL={{ opensearch_download_url }})
   get_url:
     url: "{{ opensearch_download_url }}"
     dest: "/tmp/opensearch.tar.gz"
   register: download
-  when: not offline_installation
+  when: installation_mode == "online"
 
-- name: OpenSearch Install | [OffLine] Create local temporary directory for zip download
+### SSH MODE ###
+- name: OpenSearch Install | [ssh] Create local temporary directory for zip download
   local_action:
     module: file
     path: "{{ temp_tar_dir }}"
     state: directory
   run_once: true
-  when: offline_installation
+  when: installation_mode == "ssh"
 
-- name: OpenSearch Install | [OffLine] Download opensearch {{ os_version }} (URL={{ opensearch_download_url }})
+- name: OpenSearch Install | [ssh] Download opensearch {{ os_version }} (URL={{ opensearch_download_url }})
   delegate_to: localhost
   get_url:
     url: "{{ opensearch_download_url }}"
     dest: "{{ temp_tar_dir }}"
   register: download
-  when: offline_installation
+  when: installation_mode == "ssh"
 
-- name: OpenSearch Install | [OffLine] Copy Opensearch tar through ssh
+- name: OpenSearch Install | [ssh] Copy Opensearch tar through ssh
   copy:
     src: "{{ temp_tar_dir }}/opensearch-{{ os_version }}-linux-x64.tar.gz"
     dest: "/tmp/opensearch.tar.gz"
   run_once: true
   when: 
-    - offline_installation
+    - installation_mode == "ssh"
     - download.changed
 
+### OFFLINE MODE ###
+- name: OpenSearch Install | [offline] Copy Opensearch tar in temp directory for installation mode indpendent part
+  delegate_to: localhost
+  copy:
+    src: "{{ offline_tar_dir }}/opensearch-{{ os_version }}-linux-x64.tar.gz"
+    dest: "/tmp/opensearch.tar.gz"
+  run_once: true
+  register: download
+  when: installation_mode == "offline"
+
+### INSTALLATION MODE INDIPENDENT PART ###
 - name: OpenSearch Install | Create opensearch user
   user:
     name: "{{ os_user }}"

@@ -1,37 +1,43 @@
 ---
 
+### ONLINE MODE ###
 - name: Logstash Install | [OnLine] Download logstash OSS {{ logstash_version }} (URL={{ logstash_download_url }})
   get_url:
     url: "{{ logstash_download_url }}"
     dest: "/tmp/logstash.tar.gz"
   register: download
-  when: not offline_installation
+  when: installation_mode == "online"
 
-- name: Logstash Install | [OffLine] Create local temporary directory for zip download
+### SSH MODE ###
+- name: Logstash Install | [ssh] Create local temporary directory for zip download
   local_action:
     module: file
     path: "{{ temp_tar_dir }}"
     state: directory
   run_once: true
-  when: offline_installation
+  when: installation_mode == "ssh"
 
-- name: Logstash Install | [OffLine] Download logstash OSS {{ logstash_version }} (URL={{ logstash_download_url }})
+- name: Logstash Install | [ssh] Download logstash OSS {{ logstash_version }} (URL={{ logstash_download_url }})
   delegate_to: localhost
   get_url:
     url: "{{ logstash_download_url }}"
     dest: "{{ temp_tar_dir }}"
   register: download
-  when: offline_installation
+  when: installation_mode == "ssh"
 
-- name: Logstash Install | [OffLine] Copy logstash OSS tar through ssh
+- name: Logstash Install | [ssh] Copy logstash OSS tar through ssh
   copy:
     src: "{{ temp_tar_dir }}/logstash-oss-with-opensearch-output-plugin-{{ logstash_version }}-linux-x64.tar.gz"
     dest: "/tmp/logstash.tar.gz"
   run_once: true
   when: 
-    - offline_installation
+    - installation_mode == "ssh"
     - download.changed
 
+### OFFLINE MODE ###
+
+
+### INSTALLATION MODE INDIPENDENT PART ###
 - name: Logstash Install | Create logstash user
   user:
     name: "{{ logstash_user }}"

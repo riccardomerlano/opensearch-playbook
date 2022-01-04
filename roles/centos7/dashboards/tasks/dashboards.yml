@@ -1,37 +1,43 @@
 ---
 
+### ONLINE MODE ###
 - name: Dashboards Install | [OnLine] Download opensearch dashbaord {{ os_dashboards_version }} (URL={{ dashboards_download_url }})
   get_url:
     url: "{{ dashboards_download_url }}"
     dest: "/tmp/opensearch-dashboards.tar.gz"
   register: download
-  when: not offline_installation
+  when: installation_mode == "online"
 
-- name: Dashboards Install | [OffLine] Create local temporary directory for zip download
+### SSH MODE ###
+- name: Dashboards Install | [ssh] Create local temporary directory for zip download
   local_action:
     module: file
     path: "{{ temp_tar_dir }}"
     state: directory
   run_once: true
-  when: offline_installation
+  when: installation_mode == "ssh"
 
-- name: Dashboards Install | [OffLine] Download opensearch dashbaord {{ os_dashboards_version }} (URL={{ dashboards_download_url }})
+- name: Dashboards Install | [ssh] Download opensearch dashbaord {{ os_dashboards_version }} (URL={{ dashboards_download_url }})
   delegate_to: localhost
   get_url:
     url: "{{ dashboards_download_url }}"
     dest: "{{ temp_tar_dir }}"
   register: download
-  when: offline_installation
+  when: installation_mode == "ssh"
 
-- name: Dashboards Install | [OffLine] Copy opensearch dashboards tar through ssh
+- name: Dashboards Install | [ssh] Copy opensearch dashboards tar through ssh
   copy:
     src: "{{ temp_tar_dir }}/opensearch-dashboards-{{ os_dashboards_version }}-linux-x64.tar.gz"
     dest: "/tmp/opensearch-dashboards.tar.gz"
   run_once: true
   when: 
-    - offline_installation
+    - installation_mode == "ssh"
     - download.changed
 
+### OFFLINE MODE ###
+
+
+### INSTALLATION MODE INDIPENDENT PART ###
 - name: Dashboards Install | Create opensearch user
   user:
     name: "{{ os_user }}"

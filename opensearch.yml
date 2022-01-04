@@ -5,15 +5,24 @@
   gather_facts: true
   roles:
     - { role: centos7/opensearch }
+  when: installation_mode != "offline"
 
-- name: opensearch dashboards installation & configuration
-  hosts: dashboards
+# - name: opensearch dashboards installation & configuration
+#   hosts: dashboards
+#   gather_facts: true
+#   roles:
+#     - { role: centos7/dashboards }
+
+# - name: logstash oss installation & configuration
+#   hosts: logstash
+#   gather_facts: true
+#   roles:
+#     - { role: centos7/logstash }
+
+- name: opensearch installation & configuration
+  hosts: os-cluster
+  connection: local
   gather_facts: true
   roles:
-    - { role: centos7/dashboards }
-
-- name: logstash oss installation & configuration
-  hosts: logstash
-  gather_facts: true
-  roles:
-    - { role: centos7/logstash }
+    - { role: centos7/opensearch }
+  when: installation_mode == "offline"

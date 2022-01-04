@@ -35,11 +35,17 @@ cluster_type: single-node
 # Master machine's directory where certificates are generated
 localhost_certs_dir: "{{ playbook_dir }}/cert"
 
-#### FOR "OFFLINE" INSTALLATION ####
+#### FOR INSTALLATION MODES ####
 
-# Boolean value for offline installation: set true if the machine do not have access to outer internet
-offline_installation: true
+# Value for installation mode:
+# - online: the host machine has full access to outer internet
+# - ssh: the host machine HASN'T access to outer internet, but it can be reached through ssh (and the ansible is launched through ssh)
+# - offline: the host machine HASN'T ANY ACCESS outside the machine itself, the installation is completely made through localhost 
+installation_mode: "offline"
 
 # Master machine's directory where zipped component are temporarely saved 
-# (make sense only if "offline_installation: true")
+# (make sense only if installation_mode: "ssh")
 temp_tar_dir: "/tmp/opensearch_component_tar"
+
+# Directory where tar can be found for OFFLINE installation mode 
+offline_tar_dir: "{{ playbook_dir }}/opensearch_component_tar"
