@@ -88,7 +88,7 @@
 
 ### REMOTE PROPRIETARY CERT ###
 - name: Dashboards Install | [Remote-prop-cert] Copy the dashboard certificates to opensearch nodes
-  command: "mv {{ proprietary_dashboard_cert_dir }} {{ os_dash_conf_dir }}"
+  command: "mv {{ proprietary_dashboard_cert_dir }}/* {{ os_dash_conf_dir }}"
   when: proprietary_dashboard_cert == "remote"
 ### END OF PROPRIETARY CERT ###
 
