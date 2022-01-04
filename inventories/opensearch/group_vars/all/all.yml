@@ -40,8 +40,8 @@ localhost_certs_dir: "{{ playbook_dir }}/cert"
 # Value for installation mode:
 # - online: the host machine has full access to outer internet
 # - ssh: the host machine HASN'T access to outer internet, but it can be reached through ssh (and the ansible is launched through ssh)
-# - offline: the host machine HASN'T ANY ACCESS outside the machine itself, the installation is completely made through localhost 
-installation_mode: "offline"
+# - offline: the host machine HASN'T ANY ACCESS outside the machine itself, the installation is completely made through localhost (IN DEVELOPMENT)
+installation_mode: "ssh"
 
 # Master machine's directory where zipped component are temporarely saved 
 # (make sense only if installation_mode: "ssh")
