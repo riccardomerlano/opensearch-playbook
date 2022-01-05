@@ -32,6 +32,10 @@ xmx_value: 2
 # Cluster type whether its single node or multi-node
 cluster_type: single-node
 
+##################################
+#### CERT_GENERATOR.SH CONFIG ####
+##################################
+
 # Master machine's directory where certificates are generated
 localhost_certs_dir: "{{ playbook_dir }}/cert"
 
